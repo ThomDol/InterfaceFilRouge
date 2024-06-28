@@ -6,8 +6,11 @@ import Patient from "./components/modulePatient/Patient";
 import Error from "./components/module erreur/Error";
 import Login from "./components/Login/Login";
 import { StorageProvider } from "./components/StorageContext";
-import ListePraticienComponent from "./components/modulePraticien/ListePraticienComponent";
-import PraticienComponent from "./components/modulePraticien/PraticienComponent";
+import ListPraticien from "./components/ModulePraticien/ListPraticien";
+import CreatePraticien from "./components/ModulePraticien/CreatePraticien";
+import UpdatePraticien from "./components/ModulePraticien/UpdatePraticien";
+import React from "react";
+import ReadPraticien from "./components/ModulePraticien/ReadPraticien";
 
 function App() {
   return (
@@ -20,11 +23,12 @@ function App() {
             <Route path="/List" element={<ListPatient />} />
             <Route path="/patient/:id" element={<Patient />} />
             <Route path="/Deconnexion" element={<Deconnexion />} />
-            <Route path="/Admin" element={<ListePraticienComponent />} />
-            <Route path="/ajouter-praticien" element={<PraticienComponent />} />
+            <Route path="/Admin" element={<ListPraticien />} />
+            <Route path="/create" element={<CreatePraticien />} />
+            <Route path="/read/:id" element={<ReadPraticien/>}></Route>
             <Route
-              path="/modifier-praticien"
-              element={<PraticienComponent />}
+              path="/update/:id"
+              element={<UpdatePraticien />}
             />
             <Route
               path="/error"
