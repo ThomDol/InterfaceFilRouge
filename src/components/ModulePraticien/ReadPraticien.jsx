@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import Header from '../header/Header';
 
 function ReadPraticien() {
     const token = localStorage.getItem("token");
@@ -22,7 +23,10 @@ function ReadPraticien() {
     }, [id, token]);
 
     return (
-        <div className='d-flex w-100 vh-100 justify-content-center align-items-center bg-light'>
+        <div>
+         <div><Header/></div>
+        <div className='d-flex w-100 vh-100 justify-content-center align-items-center '>
+           
             <div className='w-50 border bg-white shadow px-5 pt-3 pb-5 rounded'>
                 <h2>Infos du Praticien</h2>
                 {error ? (
@@ -66,6 +70,7 @@ function ReadPraticien() {
                 <Link to={`/update/${id}`} className='btn btn-success'>Modifier</Link>
                 <Link to="/Admin" className='btn btn-primary ms-3'>Retour</Link>
             </div>
+        </div>
         </div>
     );
 }

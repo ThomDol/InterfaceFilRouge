@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import Header from '../header/Header';
 
 function UpdatePraticien() {
     const token = localStorage.getItem("token");
@@ -47,7 +48,9 @@ function UpdatePraticien() {
     };
 
     return (
-        <div className='d-flex w-100 vh-100 justify-content-center align-items-center bg-light'>
+        <div>
+            <Header/>
+        <div className='d-flex w-100 vh-100 justify-content-center align-items-center'>
             <div className='w-50 border bg-white shadow px-5 pt-3 pb-5 rounded'>
                 <h1>Modifier le Praticien</h1>
                 <form onSubmit={handleUpdate}>
@@ -152,9 +155,10 @@ function UpdatePraticien() {
                         />
                     </div>
                     <button className='btn btn-success'>Update</button>
-                    <Link to="/" className='btn btn-primary ms-3'>Back</Link>
+                    <Link to="/Admin" className='btn btn-primary ms-3'>Back</Link>
                 </form>
             </div>
+        </div>
         </div>
     );
 }
