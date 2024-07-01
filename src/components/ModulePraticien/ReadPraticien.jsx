@@ -43,9 +43,6 @@ function ReadPraticien() {
                         </div>
                 
                         <div className='mb-2'>
-                            <strong>Rôle: {praticien.nomRole}</strong>
-                        </div>
-                        <div className='mb-2'>
                             <strong>Ville: {praticien.nomVille}</strong>
                         </div>
                         <div className='mb-2'>
