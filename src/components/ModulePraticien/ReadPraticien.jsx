@@ -41,9 +41,7 @@ function ReadPraticien() {
                         <div className='mb-2'>
                             <strong>Prénom: {praticien.prenomPraticienConnecte}</strong>
                         </div>
-                        <div className='mb-2'>
-                            <strong>Mot de passe: {praticien.password}</strong>
-                        </div>
+                
                         <div className='mb-2'>
                             <strong>Rôle: {praticien.nomRole}</strong>
                         </div>
