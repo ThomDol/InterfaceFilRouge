@@ -10,6 +10,7 @@ import ListPraticien from "./components/module Admin/ListPraticien";
 import ReadPraticien from "./components/module Admin/ReadPraticien";
 import CreatePraticien from "./components/module Admin/CreatePraticien";
 import UpdatePraticien from "./components/module Admin/UpdatePraticien";
+import PatientForm from "./components/modulePatient/PatientForm";
 
 
 function App() {

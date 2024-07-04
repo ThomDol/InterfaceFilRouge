@@ -124,14 +124,14 @@ const PhysiqueNew = ({ idPatient,idPhysiqueSelected, countMesure, setCountMesure
       <h3 style={{ textAlign: "center", paddingTop: "10px" }}>Créer</h3>
       </div>
       <div className="col-1">
-          <div
+         {idPhysiqueSelected && <div
             className="btn btn-danger"
             onClick={() => {
               deleteMesure(idPhysiqueSelected);
             }}
           >
             Supprimer
-          </div>
+          </div>}
         </div>
         </div>
       <br />
