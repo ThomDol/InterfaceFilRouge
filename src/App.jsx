@@ -1,16 +1,16 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Patient from "./components/modulePatient/Patient";
 import ListPatient from "./components/modulePatient/ListPatient";
 import Accueil from "./components/Accueil/Accueil";
 import Deconnexion from "./components/module deconnexion/Deconnexion";
-import Patient from "./components/modulePatient/Patient";
-import Error from "./components/module erreur/Error";
+import Profil from "./components/module profil/Profil";
 import Login from "./components/Login/Login";
 import { StorageProvider } from "./components/StorageContext";
-import ListPraticien from "./components/ModulePraticien/ListPraticien";
-import CreatePraticien from "./components/ModulePraticien/CreatePraticien";
-import UpdatePraticien from "./components/ModulePraticien/UpdatePraticien";
-import React from "react";
-import ReadPraticien from "./components/ModulePraticien/ReadPraticien";
+import ListPraticien from "./components/module Admin/ListPraticien";
+import ReadPraticien from "./components/module Admin/ReadPraticien";
+import CreatePraticien from "./components/module Admin/CreatePraticien";
+import UpdatePraticien from "./components/module Admin/UpdatePraticien";
+
 
 function App() {
   return (
@@ -20,21 +20,15 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Accueil />} />
+            <Route path="/Profil" element={<Profil />} />
+            <Route path="/CreateNewPatient" element={<PatientForm />} />
             <Route path="/List" element={<ListPatient />} />
             <Route path="/patient/:id" element={<Patient />} />
-            <Route path="/Deconnexion" element={<Deconnexion />} />
             <Route path="/Admin" element={<ListPraticien />} />
+            <Route path="/read/:id" element={<ReadPraticien />} />
             <Route path="/create" element={<CreatePraticien />} />
-            <Route path="/read/:id" element={<ReadPraticien/>}></Route>
-            <Route
-              path="/update/:id"
-              element={<UpdatePraticien />}
-            />
-            <Route
-              path="/error"
-              element={<Error />}
-            />
-            <Route path="/*" element={<Login />} />
+            <Route path="/update/:id" element={<UpdatePraticien />} />
+            <Route path="/Deconnexion" element={<Deconnexion />} />
           </Routes>
         </Router>
       </div>

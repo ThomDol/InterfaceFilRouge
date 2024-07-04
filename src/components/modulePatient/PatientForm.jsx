@@ -1,11 +1,35 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useStorage } from "../../StorageContext";
-import { Modal } from "bootstrap";
+import ModalMedecinForm from "../module medecin traitant/ModalMedecinForm";
+import { useNavigate } from "react-router-dom";
+import NavBar from "../header/NavBar";
+import { jwtDecode } from "jwt-decode";
+import CryptoJS from "crypto-js";
 
-const PatientForm = ({ idModal, count, setCount }) => {
+// Clé secrète et vecteur d'initialisation pour le décryptage
+const SECRET_KEY = "q#4puta9!am4$fcl";
+const INIT_VECTOR = "1zp6@y#ect4?5krx";
+
+// Fonction de décryptage du token
+const decryptToken = (encryptedToken) => {
+  const key = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+  const iv = CryptoJS.enc.Utf8.parse(INIT_VECTOR);
+
+  const decrypted = CryptoJS.AES.decrypt(encryptedToken, key, {
+    iv: iv,
+    padding: CryptoJS.pad.Pkcs7,
+    mode: CryptoJS.mode.CBC,
+  });
+
+  return decrypted.toString(CryptoJS.enc.Utf8);
+};
+
+const PatientForm = () => {
+  // États pour gérer les données du formulaire
+  const [userId, setUserId] = useState(null);
   const token = localStorage.getItem("token");
-  const idPraticien = localStorage.getItem("idPraticien");
+  const navigate = useNavigate();
+  const [listDoc, setListDoc] = useState([]);
   const [dateNaissance, setDateNaissance] = useState("");
   const [nomGenre, setNomGenre] = useState("");
   const [nomProfession, setNomProfession] = useState("");
@@ -17,16 +41,63 @@ const PatientForm = ({ idModal, count, setCount }) => {
   const [medecinTraitantComplet, setMedecinTraitantComplet] = useState("");
   const [nomVille, setNomVille] = useState("");
   const [codePostal, setCodePostal] = useState("");
+  const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+  const [count, setCount] = useState(0); // Pour actualiser la liste des médecins lors d'un ajout
+  const idModalDocAdd = "idModalDocAdd";
 
+  // Référence pour le modal
   const modalRef = useRef();
 
+  // Effet pour déchiffrer et décoder le token au chargement du composant
+  useEffect(() => {
+    try {
+      const decryptedToken = decryptToken(token);
+      const decodedToken = jwtDecode(decryptedToken);
+      setUserId(decodedToken.id);
+    } catch (error) {
+      console.error("Erreur de décryptage ou de décodage du token:", error);
+    }
+  }, []);
+
+  // Effet pour masquer le message de succès lors du chargement du composant
+  useEffect(() => {
+    setDisplaySuccessMessage(false);
+  }, []);
+
+  // Effet pour charger la liste des médecins traitants
+  useEffect(() => {
+    const loadAllDoc = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/medecintraitant/all",
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        setListDoc(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadAllDoc();
+  }, [count]);
+
+  // Gestionnaire de soumission du formulaire
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Diviser la valeur combinée du médecin traitant
-    const [medecinNom, medecinPrenom, medecinVille] =
-      medecinTraitantComplet.split(" ");
-    // Diviser la valeur combinée de la ville
 
+    // Diviser la valeur combinée du médecin traitant
+    const [
+      prenomMedecinTraitant,
+      nomMedecinTraitant,
+      villeMedecinTraitant,
+      codePostalMedecinTraitant,
+    ] = medecinTraitantComplet.split(" ");
+
+    // Créer un objet de données du formulaire
     const formData = {
       dateNaissance,
       nomVille,
@@ -34,11 +105,10 @@ const PatientForm = ({ idModal, count, setCount }) => {
       nomGenre,
       nomProfession,
       nomTypePatient,
-      MedecinTraitant: {
-        nom: medecinNom,
-        prenom: medecinPrenom,
-        ville: medecinVille,
-      },
+      nomMedecinTraitant: nomMedecinTraitant,
+      prenomMedecinTraitant: prenomMedecinTraitant,
+      villeMedecinTraitant: villeMedecinTraitant,
+      codePostalMedecinTraitant: codePostalMedecinTraitant,
       nomPatient,
       prenomPatient,
       email,
@@ -46,8 +116,9 @@ const PatientForm = ({ idModal, count, setCount }) => {
     };
 
     try {
+      // Envoyer les données du formulaire à l'API
       const response = await axios.post(
-        `http://localhost:5000/api/patient/${idPraticien}`,
+        `http://localhost:5000/api/patient/${userId}`,
         formData,
         {
           headers: {
@@ -55,38 +126,46 @@ const PatientForm = ({ idModal, count, setCount }) => {
           },
         }
       );
+      setDisplaySuccessMessage(true); // Afficher le message de succès
       console.log(response.data);
-      setCount(count + 1); //pour que liste s'actualise
-
-      const modalInstance = Modal.getInstance(modalRef.current);
-      modalInstance.hide();
+      navigate("/List"); // Rediriger vers la liste des patients
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div
-      className="modal fade"
-      id={`Modal-${idModal}`}
-      tabIndex="-1"
-      aria-labelledby={`ModalLabel-${idModal}`}
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-lg">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id={`ModalLabel-${idModal}`}>
-              Patient Form
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
+    <div>
+      <div>
+        <NavBar /> {/* Barre de navigation */}
+      </div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <div className="col-6 mx-auto">
+        <div className="text-center">
+          <h5>Nouvelle Fiche Patient</h5> {/* Titre du formulaire */}
+        </div>
+        <br />
+        <div>
           <div className="modal-body">
+            <div className="d-flex justify-content-end">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-toggle="modal"
+                data-bs-target={`#Modal-${idModalDocAdd}`}
+              >
+                Ajouter Médecin Traitant {/* Bouton pour ajouter un médecin traitant */}
+              </button>
+              <ModalMedecinForm
+                idModalDoc={idModalDocAdd}
+                count={count}
+                setCount={setCount}
+              />
+            </div>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="nomPatient" className="form-label">
@@ -119,9 +198,11 @@ const PatientForm = ({ idModal, count, setCount }) => {
                   Date de Naissance
                 </label>
                 <input
-                  type="date"
+                  type="text"
                   className="form-control"
                   id="dateNaissance"
+                  placeholder="jj/mm/aaaa"
+                  pattern="\d{2}/\d{2}/\d{4}"
                   required
                   value={dateNaissance}
                   onChange={(e) => setDateNaissance(e.target.value)}
@@ -239,11 +320,18 @@ const PatientForm = ({ idModal, count, setCount }) => {
                   value={medecinTraitantComplet}
                   onChange={(e) => setMedecinTraitantComplet(e.target.value)}
                 >
-                  {/* Options à remplir dynamiquement */}
+                  <option value="">Selectionner le medecin traitant</option>
+                  {listDoc &&
+                    listDoc.map((doc, index) => (
+                      <option
+                        key={index}
+                        value={`${doc.prenomMedecinTraitant} ${doc.nomMedecinTraitant} ${doc.villeMedecinTraitant} ${doc.codePostalMedecinTraitant}`}
+                      >
+                        {doc.prenomMedecinTraitant} {doc.nomMedecinTraitant},{" "}
+                        {doc.villeMedecinTraitant}
+                      </option>
+                    ))}
                 </select>
-                <button type="button" className="btn btn-link">
-                  Ajouter Médecin
-                </button>
               </div>
               <div className="mb-3">
                 <label htmlFor="nomVille" className="form-label">
@@ -303,23 +391,25 @@ const PatientForm = ({ idModal, count, setCount }) => {
                   className="form-control"
                   id="tel"
                   required
+                  placeholder="10 chiffres"
+                  pattern="\d{10}"
                   value={tel}
                   onChange={(e) => setTel(e.target.value)}
                 />
               </div>
-              <button type="submit" className="btn btn-primary">
-                Soumettre
+              <br />
+              <button type="submit" className="btn btn-secondary">
+                Créer
               </button>
             </form>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
+            <br />
+            {displaySuccessMessage && (
+              <div className="text-center">
+                <span style={{ fontWeight: "bold", color: "green" }}>
+                  Patient crée {/* Message de succès */}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
