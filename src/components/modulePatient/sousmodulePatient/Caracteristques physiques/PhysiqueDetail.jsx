@@ -63,11 +63,6 @@ const PhysiqueDetail = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-<<<<<<< HEAD:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueNew.jsx
-    if(mesureSelected){
-        axios
-        .put(`http://localhost:5000/api/physique/${idPhysiqueSelected}`, formData, {
-=======
     if (mesureSelected) {
       axios
         .put(
@@ -88,40 +83,18 @@ const PhysiqueDetail = ({
     } else {
       axios
         .post(`http://localhost:5000/api/physique/${idPatient}`, formData, {
->>>>>>> tom:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueDetail.jsx
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((res) => {
-<<<<<<< HEAD:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueNew.jsx
-          Swal.fire("Mise à jour faite")
-=======
           Swal.fire("Creation faite");
->>>>>>> tom:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueDetail.jsx
           console.log(res.data);
           setCountMesure(countMesure + 1);
         })
         .catch((error) => console.log(error));
     }
-<<<<<<< HEAD:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueNew.jsx
-    else{
-    axios
-      .post(`http://localhost:5000/api/physique/${idPatient}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        Swal.fire("Création faite")
-        console.log(res.data);
-        setCountMesure(countMesure + 1);
-      })
-      .catch((error) => console.log(error));
-  }};
-=======
   };
->>>>>>> tom:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueDetail.jsx
 
   const deleteMesure = () => {
     Swal.fire({
@@ -175,20 +148,6 @@ const PhysiqueDetail = ({
           )}
         </div>
       </div>
-<<<<<<< HEAD:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueNew.jsx
-      <div className="col-1">
-         {idPhysiqueSelected && <div
-            className="btn btn-danger"
-            onClick={() => {
-              deleteMesure(idPhysiqueSelected);
-            }}
-          >
-            Supprimer
-          </div>}
-        </div>
-        </div>
-=======
->>>>>>> tom:src/components/modulePatient/sousmodulePatient/Caracteristques physiques/PhysiqueDetail.jsx
       <br />
       <br />
       <form onSubmit={handleSubmit}>
